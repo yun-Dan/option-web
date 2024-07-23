@@ -1,10 +1,12 @@
 "use client"
-import { Stage, Layer, Star, Text, Circle, Line, Shape, Rect } from 'react-konva';
-import { atom, useAtom } from 'jotai'
-import { pointListAtom,profitOrLossAtom,optionPriceAtom } from "../atoms/optionChart";
-import {  useState,useCallback, useMemo } from 'react';
-import { colorsEnum,pointKeyEnum } from '../constats';
 import React from 'react';
+import {  useState,useCallback, useMemo } from 'react';
+import { atom, useAtom } from 'jotai'
+import BigNumber from "bignumber.js";
+import { Stage, Layer, Star, Text, Circle, Line, Shape, Rect } from 'react-konva';
+
+import { pointListAtom,profitOrLossAtom,optionPriceAtom } from "../atoms/optionChart";
+import { colorsEnum,pointKeyEnum } from '../constats';
 
 const stageHeight  = 1200;
 const stageWidth = 1200;
@@ -89,12 +91,12 @@ const  OptionChart =()=> {
     const calcProfitOrLoss = (x: number,y: number)=>{
       //计算出开始损失(原点)到最大损失点 x的距离； 得出1px 大约多少钱
       const maxLostDistance =  markPointsPosition.breakEven.x - markPointsPosition.maxLost.x ;
-      const unitPxToPrice = (+ optionPrice / maxLostDistance).toFixed(2)
+      const unitPxToPrice =  optionPrice / maxLostDistance
       if(x <=  markPointsPosition.maxLost.x){
         setProfitOrLoss(-optionPrice)
       }else{
-        const profit = -optionPrice + (x-markPointsPosition.maxLost.x)* +unitPxToPrice
-        setProfitOrLoss(profit)
+        const profit = -optionPrice + (x-markPointsPosition.maxLost.x)* + unitPxToPrice
+        setProfitOrLoss(new BigNumber(profit).toFixed(2))
       }
     }
     const displayProfitOrLossDetail = ()=>{
